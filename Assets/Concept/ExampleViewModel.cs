@@ -1,16 +1,21 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public partial class ExampleViewModel : ViewModelRoot
 {
     public PropertyView<string> exampleLabel;
     public PropertyView<float> exampleFloat;
     public PropertyView<string> exampleInput;
+    public PropertyView<string> exampleInputPlaceholder;
 
     [SerializeField]
     private string _exampleString;
     [SerializeField]
     private float _exampleFloat;
+    [FormerlySerializedAs("_exampleInputPlaceholder")]
+    [SerializeField]
+    private string _exampleInputPlaceHolder;
 
     private GUIStyle _box;
     private GUIStyle _boldLabel;
@@ -19,12 +24,14 @@ public partial class ExampleViewModel : ViewModelRoot
     {
         exampleLabel.SetFromModel(_exampleString);
         exampleFloat.SetFromModel(_exampleFloat);
+        exampleInputPlaceholder.SetFromModel(_exampleInputPlaceHolder);
     }
 
     private void OnValidate()
     {
         exampleLabel?.SetFromModel(_exampleString);
         exampleFloat?.SetFromModel(_exampleFloat);
+        exampleInputPlaceholder?.SetFromModel(_exampleInputPlaceHolder);
     }
 
     private void OnGUI()
@@ -61,5 +68,6 @@ public partial class ExampleViewModel
         _propertiesCache[nameof(exampleLabel)] = exampleLabel = new();
         _propertiesCache[nameof(exampleFloat)] = exampleFloat = new();
         _propertiesCache[nameof(exampleInput)] = exampleInput = new();
+        _propertiesCache[nameof(exampleInputPlaceholder)] = exampleInputPlaceholder = new();
     }
 }

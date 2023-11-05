@@ -5,6 +5,9 @@ namespace Concept
 {
     public class SliderView : BindableView
     {
+        [ViewModelProperty]
+        public string PropertyName;
+
         private Slider _slider;
 
         private void Awake()
@@ -13,9 +16,12 @@ namespace Concept
             _slider.onValueChanged.AddListener(OnSliderChanged);
         }
 
-        protected override ViewDataBridge CreateResolver()
+        protected override ViewDataBridge[] CreateDataBridge()
         {
-            return new FloatViewDataBridge();
+            return new ViewDataBridge[]
+            {
+                new FloatViewDataBridge(PropertyName)
+            };
         }
 
         public override void OnChanged<T>(PropertyView<T> propertyView)
@@ -24,15 +30,15 @@ namespace Concept
             {
                 PropertyView<float> f => f.Value,
                 _ => throw new Exception(
-                    $"Property '{TargetPropertyName}' has type '{propertyView.GetType().GenericTypeArguments[0].Name}', " +
-                    $"but resolver '{resolver.GetType().Name}' doesn't support it!"
+                    $"Property '{PropertyName}' has type '{propertyView.GetType().GenericTypeArguments[0].Name}', " +
+                    $"but resolver '{dataBridge.GetType().Name}' doesn't support it!"
                 )
             };
         }
 
         private void OnSliderChanged(float value)
         {
-            resolver.SetValue(value);
+            dataBridge.SetValue(value);
         }
     }
 }

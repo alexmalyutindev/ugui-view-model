@@ -1,30 +1,53 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(InputField))]
 public class InputFieldView : BindableView
 {
+    [ViewModelProperty]
+    public string InputProperty;
+    [FormerlySerializedAs("PalaceholderProperty")]
+    [ViewModelProperty]
+    public string PalaceHolderProperty;
+
+    private enum Bindings
+    {
+        InputProperty = 0,
+        PalaceHolderProperty,
+        Count
+    }
+
     private InputField _inputField;
+    private Text _placeHolder;
 
     private void Awake()
     {
         _inputField = GetComponent<InputField>();
+        _placeHolder = _inputField.placeholder.GetComponent<Text>();
         _inputField.onValueChanged.AddListener(OnInputChanged);
     }
 
-    protected override ViewDataBridge CreateResolver()
+    protected override ViewDataBridge[] CreateDataBridge()
     {
-        // TODO: Switch on Property type.
-        return new StringViewDataBridge();
+        var bridges = new ViewDataBridge[(int) Bindings.Count];
+        bridges[(int) Bindings.InputProperty] = new StringViewDataBridge(InputProperty);
+            // .OnChange(
+            //     propertyView => { _inputField.text = propertyView.As<string>().Value; }
+            // );
+        bridges[(int) Bindings.PalaceHolderProperty] = new StringViewDataBridge(PalaceHolderProperty);
+        return bridges;
     }
 
     public override void OnChanged<T>(PropertyView<T> propertyView)
     {
+        // TODO: Resolve multiple properties bindings.
         _inputField.text = propertyView.As<string>().Value;
+        _placeHolder.text = propertyView.As<string>().Value;
     }
 
     private void OnInputChanged(string value)
     {
-        resolver.SetValue(value);
+        dataBridges[(uint) Bindings.InputProperty].SetValue(value);
     }
 }

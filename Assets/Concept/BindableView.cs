@@ -3,18 +3,19 @@ using UnityEngine;
 
 public abstract class BindableView : MonoBehaviour
 {
-    public string TargetPropertyName;
-    public PropertyView TargetProperty;
+    protected ViewDataBridge dataBridge => dataBridges[0];
+    protected ViewDataBridge[] dataBridges { get; private set; }
 
-    protected ViewDataBridge resolver { get; private set; }
-
-    protected abstract ViewDataBridge CreateResolver();
+    protected abstract ViewDataBridge[] CreateDataBridge();
 
     public abstract void OnChanged<T>(PropertyView<T> propertyView);
 
     public void Bind(Dictionary<string, PropertyView> properties)
     {
-        resolver = CreateResolver();
-        resolver.Link(this, properties[TargetPropertyName]);
+        dataBridges = CreateDataBridge();
+        foreach (var bridge in dataBridges)
+        {
+            bridge.Link(this, properties[bridge.PropertyName]);
+        }
     }
 }
