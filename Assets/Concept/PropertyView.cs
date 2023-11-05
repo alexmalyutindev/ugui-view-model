@@ -19,6 +19,7 @@ public class PropertyView<T> : PropertyView
     {
         _oldValue = _value;
         _value = value;
+        Changed?.Invoke(this);
     }
     
     public void SetFromModel(T value)

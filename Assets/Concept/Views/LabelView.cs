@@ -4,8 +4,17 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Text))]
 public class LabelView : BindableView
 {
+    private enum PropertyType
+    {
+        String,
+        Int,
+        Float
+    }
+
     [ViewModelProperty]
     public string PropertyName;
+    [SerializeField]
+    private PropertyType Type;
 
     public string Format;
 
@@ -13,10 +22,14 @@ public class LabelView : BindableView
 
     protected override ViewDataBridge[] CreateDataBridge()
     {
-        return new ViewDataBridge[]
+        ViewDataBridge bridge = Type switch
         {
-            new StringViewDataBridge(PropertyName)
+            PropertyType.String => new StringViewDataBridge(PropertyName),
+            PropertyType.Float => new FloatViewDataBridge(PropertyName),
+            _ => new StringViewDataBridge(PropertyName),
         };
+
+        return new ViewDataBridge[] { bridge };
     }
 
     private void Awake()
@@ -30,8 +43,8 @@ public class LabelView : BindableView
         _text.text = propertyView switch
         {
             PropertyView<string> s => s.Value,
-            PropertyView<int> i => i.Value.ToString(Format),
             PropertyView<float> f => f.Value.ToString(Format),
+            PropertyView<int> i => i.Value.ToString(Format),
             _ => _text.text
         };
     }

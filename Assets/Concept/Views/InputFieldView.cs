@@ -42,7 +42,7 @@ public class InputFieldView : BindableView
     public override void OnChanged<T>(PropertyView<T> propertyView)
     {
         // TODO: Resolve multiple properties bindings.
-        _inputField.text = propertyView.As<string>().Value;
+        _inputField.SetTextWithoutNotify(propertyView.As<string>().Value);
         _placeHolder.text = propertyView.As<string>().Value;
     }
 

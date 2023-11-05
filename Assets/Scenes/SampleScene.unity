@@ -493,6 +493,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PropertyName: exampleLabel
+  Type: 0
+  Format: 
 --- !u!1 &735934518
 GameObject:
   m_ObjectHideFlags: 0
@@ -1317,6 +1319,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PropertyName: exampleFloat
+  Type: 2
+  Format: 0.00
 --- !u!114 &1473690901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1370,7 +1374,6 @@ GameObject:
   - component: {fileID: 1889314206}
   - component: {fileID: 1889314208}
   - component: {fileID: 1889314207}
-  - component: {fileID: 1889314209}
   - component: {fileID: 1889314210}
   - component: {fileID: 1889314211}
   m_Layer: 5
@@ -1440,21 +1443,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889314205}
   m_CullTransparentMesh: 1
---- !u!114 &1889314209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1889314205}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9843f489658b84c77b635bec9bf5fea1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _exampleString: Hello, world!
-  _exampleFloat: 0.33
-  _exampleInputPlaceHolder: Epic Placeholder!!!
 --- !u!114 &1889314210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1507,6 +1495,7 @@ GameObject:
   - component: {fileID: 1998133511}
   - component: {fileID: 1998133510}
   - component: {fileID: 1998133509}
+  - component: {fileID: 1998133513}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1597,6 +1586,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1998133513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998133508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9843f489658b84c77b635bec9bf5fea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _exampleString: Hello, world!
+  _exampleFloat: 0.33
+  _exampleInputPlaceHolder: Epic Placeholder!!!
 --- !u!1 &2096599833
 GameObject:
   m_ObjectHideFlags: 0

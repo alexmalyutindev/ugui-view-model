@@ -13,19 +13,7 @@ namespace Concept.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var labelRect = new Rect(position)
-            {
-                width = EditorGUIUtility.labelWidth,
-            };
-
-            GUI.Label(labelRect, label);
-
-            var buttonRect = new Rect(position)
-            {
-                width = position.width - LabelWidth,
-                x = position.x + LabelWidth,
-            };
-
+            var buttonRect = EditorGUI.PrefixLabel(position, label);
 
             var value = string.IsNullOrEmpty(property.stringValue)
                 ? new GUIContent("None")
