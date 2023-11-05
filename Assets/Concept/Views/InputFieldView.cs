@@ -41,7 +41,7 @@ public class InputFieldView : BindableView
     {
         _inputField.SetTextWithoutNotify(propertyView.As<string>().Value);
 
-        // TODO: Resolve multiple properties bindings.
+        // BUG: Unravel multiple properties bindings update.
         // _placeHolder.text = propertyView.As<string>().Value;
     }
 

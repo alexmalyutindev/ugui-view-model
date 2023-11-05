@@ -19,7 +19,9 @@ public class PropertyView<T> : PropertyView
     {
         _oldValue = _value;
         _value = value;
-        Changed?.Invoke(this);
+        // BUG: Notification from view will not update other views!
+        // TODO: Add model update events queue with filtering!
+        Changed?.Invoke(this); // HOTFIX
     }
     
     public void SetFromModel(T value)
