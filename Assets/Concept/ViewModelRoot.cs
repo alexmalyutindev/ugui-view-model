@@ -20,7 +20,7 @@ public abstract class ViewModelRoot : MonoBehaviour
         var bindableViews = GetComponentsInChildren<BindableView>();
         foreach (var bindableView in bindableViews)
         {
-            bindableView.Bind(_propertiesCache);
+            bindableView.Bind(this, _propertiesCache);
         }
     }
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(InputField))]
@@ -7,7 +6,6 @@ public class InputFieldView : BindableView
 {
     [ViewModelProperty]
     public string InputProperty;
-    [FormerlySerializedAs("PalaceholderProperty")]
     [ViewModelProperty]
     public string PalaceHolderProperty;
 
@@ -39,11 +37,12 @@ public class InputFieldView : BindableView
         return bridges;
     }
 
-    public override void OnChanged<T>(PropertyView<T> propertyView)
+    public override void OnChangedFromModel<T>(PropertyView<T> propertyView)
     {
-        // TODO: Resolve multiple properties bindings.
         _inputField.SetTextWithoutNotify(propertyView.As<string>().Value);
-        _placeHolder.text = propertyView.As<string>().Value;
+
+        // TODO: Resolve multiple properties bindings.
+        // _placeHolder.text = propertyView.As<string>().Value;
     }
 
     private void OnInputChanged(string value)

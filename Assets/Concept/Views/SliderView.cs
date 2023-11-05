@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,17 +24,14 @@ namespace Concept
             };
         }
 
-        public override void OnChanged<T>(PropertyView<T> propertyView)
+        public override void OnChangedFromModel<T>(PropertyView<T> propertyView)
         {
             float value = propertyView switch
             {
                 PropertyView<float> f => f.Value,
                 PropertyView<int> i => i.Value,
                 PropertyView<string> s => float.Parse(s.Value),
-                _ => throw new Exception(
-                    $"Property '{PropertyName}' has type '{propertyView.GetType().GenericTypeArguments[0].Name}', " +
-                    $"but resolver '{dataBridge.GetType().Name}' doesn't support it!"
-                )
+                _ => throw new BridgeTypeException(PropertyName, propertyView, dataBridge),
             };
 
             _slider.SetValueWithoutNotify(value);

@@ -23,7 +23,7 @@ public class StringViewDataBridge : ViewDataBridge
     public override void Link(BindableView view, PropertyView property)
     {
         _property = property.As<string>();
-        _property.Changed += view.OnChanged;
+        _property.Changed += view.OnChangedFromModel;
     }
 
     public override T GetValue<T>()
@@ -46,7 +46,7 @@ public class FloatViewDataBridge : ViewDataBridge
     public override void Link(BindableView view, PropertyView property)
     {
         _property = property.As<float>();
-        _property.Changed += view.OnChanged;
+        _property.Changed += view.OnChangedFromModel;
     }
 
     public override T GetValue<T>()

@@ -37,7 +37,7 @@ public class LabelView : BindableView
         _text = GetComponent<Text>();
     }
 
-    public override void OnChanged<T>(PropertyView<T> propertyView)
+    public override void OnChangedFromModel<T>(PropertyView<T> propertyView)
     {
         // TODO: Cache `propertyView` type
         _text.text = propertyView switch
@@ -45,7 +45,7 @@ public class LabelView : BindableView
             PropertyView<string> s => s.Value,
             PropertyView<float> f => f.Value.ToString(Format),
             PropertyView<int> i => i.Value.ToString(Format),
-            _ => _text.text
+            _ => throw new BridgeTypeException(PropertyName, propertyView, dataBridge)
         };
     }
 }

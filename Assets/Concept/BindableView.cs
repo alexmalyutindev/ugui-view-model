@@ -8,14 +8,21 @@ public abstract class BindableView : MonoBehaviour
 
     protected abstract ViewDataBridge[] CreateDataBridge();
 
-    public abstract void OnChanged<T>(PropertyView<T> propertyView);
+    public abstract void OnChangedFromModel<T>(PropertyView<T> propertyView);
 
-    public void Bind(Dictionary<string, PropertyView> properties)
+    public void Bind(ViewModelRoot viewModel, Dictionary<string, PropertyView> properties)
     {
         dataBridges = CreateDataBridge();
         foreach (var bridge in dataBridges)
         {
-            bridge.Link(this, properties[bridge.PropertyName]);
+            if (properties.TryGetValue(bridge.PropertyName, out var propertyView))
+            {
+                bridge.Link(this, propertyView);
+            }
+            else
+            {
+                Debug.LogError($"Can't find property '{bridge.PropertyName}' in ViewModel '{viewModel.GetType().Name}'!");
+            }
         }
     }
 }
