@@ -1,19 +1,55 @@
+using System;
 using UnityEngine;
 
 public partial class ExampleViewModel : ViewModelRoot
 {
-    public PropertyView<string> exampleString;
-    public PropertyView<int> exampleInt;
+    public PropertyView<string> exampleLabel;
+    public PropertyView<float> exampleFloat;
+    public PropertyView<string> exampleInput;
 
     [SerializeField]
     private string _exampleString;
+    [SerializeField]
+    private float _exampleFloat;
+
+    private GUIStyle _box;
+    private GUIStyle _boldLabel;
+
+    private void Start()
+    {
+        exampleLabel.SetFromModel(_exampleString);
+        exampleFloat.SetFromModel(_exampleFloat);
+    }
 
     private void OnValidate()
     {
-        if (exampleString != null)
+        exampleLabel?.SetFromModel(_exampleString);
+        exampleFloat?.SetFromModel(_exampleFloat);
+    }
+
+    private void OnGUI()
+    {
+        _box ??= new GUIStyle("box")
         {
-            exampleString.Value = _exampleString;
-        }
+            normal = new GUIStyleState
+            {
+                textColor = Color.black
+            },
+            active = new GUIStyleState()
+            {
+                textColor = Color.black
+            }
+        };
+        _boldLabel ??= new GUIStyle("Label")
+        {
+            fontStyle = FontStyle.Bold
+        };
+
+        using var verticalScope = new GUILayout.VerticalScope(_box);
+        GUILayout.Label("Model:", _boldLabel);
+        GUILayout.Label(nameof(exampleLabel) + ": " + exampleLabel.Value);
+        GUILayout.Label(nameof(exampleFloat) + ": " + exampleFloat.Value);
+        GUILayout.Label(nameof(exampleInput) + ": " + exampleInput.Value);
     }
 }
 
@@ -22,7 +58,8 @@ public partial class ExampleViewModel
 {
     protected override void InitPropertiesCache()
     {
-        _propertiesCache[nameof(exampleString)] = exampleString = new PropertyView<string>();
-        _propertiesCache[nameof(exampleInt)] = exampleInt = new PropertyView<int>();
+        _propertiesCache[nameof(exampleLabel)] = exampleLabel = new();
+        _propertiesCache[nameof(exampleFloat)] = exampleFloat = new();
+        _propertiesCache[nameof(exampleInput)] = exampleInput = new();
     }
 }

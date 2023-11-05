@@ -6,12 +6,15 @@ public abstract class BindableView : MonoBehaviour
     public string TargetPropertyName;
     public PropertyView TargetProperty;
 
-    protected BindingResolver resolver;
+    protected BindingResolver resolver { get; private set; }
+
+    protected abstract BindingResolver CreateResolver();
+
+    public abstract void OnChanged<T>(PropertyView<T> propertyView);
 
     public void Bind(Dictionary<string, PropertyView> properties)
     {
+        resolver = CreateResolver();
         resolver.Resolve(this, properties[TargetPropertyName]);
     }
-
-    public abstract void OnChanged<T>(T oldValue, T newValue);
 }

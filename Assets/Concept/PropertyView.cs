@@ -10,17 +10,24 @@ public abstract class PropertyView
 
 public class PropertyView<T> : PropertyView
 {
-    public event Action<T, T> Changed;
+    public event Action<PropertyView<T>> Changed;
 
-    public T Value
+    public T Value => _value;
+    public T OldValue => _oldValue;
+
+    public void SetFromView(T value)
     {
-        get => _value;
-        set
-        {
-            Changed?.Invoke(_value, value);
-            _value = value;
-        }
+        _oldValue = _value;
+        _value = value;
+    }
+    
+    public void SetFromModel(T value)
+    {
+        _oldValue = _value;
+        _value = value;
+        Changed?.Invoke(this);
     }
 
     private T _value;
+    private T _oldValue;
 }
