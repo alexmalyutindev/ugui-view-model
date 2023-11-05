@@ -17,6 +17,7 @@ namespace Concept.Editor
             }
 
             var fields = viewModel.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+            using var box = new GUILayout.VerticalScope(GUI.skin.box);
             foreach (var field in fields)
             {
                 GUILayout.Label(field.Name + " : " + field.FieldType.GenericTypeArguments[0].Name);

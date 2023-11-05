@@ -12,10 +12,10 @@ public class InputFieldView : BindableView
         _inputField.onValueChanged.AddListener(OnInputChanged);
     }
 
-    protected override BindingResolver CreateResolver()
+    protected override ViewDataBridge CreateResolver()
     {
         // TODO: Switch on Property type.
-        return new StringBindingResolver();
+        return new StringViewDataBridge();
     }
 
     public override void OnChanged<T>(PropertyView<T> propertyView)

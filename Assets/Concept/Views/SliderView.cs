@@ -13,9 +13,9 @@ namespace Concept
             _slider.onValueChanged.AddListener(OnSliderChanged);
         }
 
-        protected override BindingResolver CreateResolver()
+        protected override ViewDataBridge CreateResolver()
         {
-            return new FloatBindingResolver();
+            return new FloatViewDataBridge();
         }
 
         public override void OnChanged<T>(PropertyView<T> propertyView)

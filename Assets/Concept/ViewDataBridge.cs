@@ -1,20 +1,20 @@
-using UnityEngine;
-
-public abstract class BindingResolver
+public abstract class ViewDataBridge
 {
-    public abstract void Resolve(BindableView view, PropertyView property);
+    public abstract void Link(BindableView view, PropertyView property);
     public abstract T GetValue<T>();
     public abstract void SetValue<T>(T value);
 }
 
-public class StringBindingResolver : BindingResolver
+public class StringViewDataBridge : ViewDataBridge
 {
     private PropertyView<string> _property;
 
-    public override void Resolve(BindableView view, PropertyView property)
+    public override void Link(BindableView view, PropertyView property)
     {
         view.TargetProperty = property;
-        property.As<string>().Changed += view.OnChanged;
+
+        _property = property.As<string>();
+        _property.Changed += view.OnChanged;
     }
 
     public override T GetValue<T>()
@@ -28,11 +28,11 @@ public class StringBindingResolver : BindingResolver
     }
 }
 
-public class FloatBindingResolver : BindingResolver
+public class FloatViewDataBridge : ViewDataBridge
 {
     private PropertyView<float> _property;
 
-    public override void Resolve(BindableView view, PropertyView property)
+    public override void Link(BindableView view, PropertyView property)
     {
         view.TargetProperty = property;
 

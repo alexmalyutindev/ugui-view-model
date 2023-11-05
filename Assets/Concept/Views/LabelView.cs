@@ -6,10 +6,10 @@ public class LabelView : BindableView
 {
     private Text _text;
 
-    protected override BindingResolver CreateResolver()
+    protected override ViewDataBridge CreateResolver()
     {
         // TODO: Switch on Property type.
-        return new StringBindingResolver();
+        return new StringViewDataBridge();
     }
     
     private void Awake()
