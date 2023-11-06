@@ -20,11 +20,11 @@ namespace Concept
         {
             return new ViewDataBridge[]
             {
-                new FloatViewDataBridge(PropertyName)
+                new FloatViewDataBridge(PropertyName).OnChanged<float>(OnChanged)
             };
         }
 
-        public override void OnChangedFromModel<T>(PropertyView<T> propertyView)
+        private void OnChanged<T>(PropertyView<T> propertyView)
         {
             float value = propertyView switch
             {

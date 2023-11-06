@@ -29,20 +29,21 @@ public class InputFieldView : BindableView
     protected override ViewDataBridge[] CreateDataBridge()
     {
         var bridges = new ViewDataBridge[(int) Bindings.Count];
-        bridges[(int) Bindings.InputProperty] = new StringViewDataBridge(InputProperty);
-            // .OnChange(
-            //     propertyView => { _inputField.text = propertyView.As<string>().Value; }
-            // );
-        bridges[(int) Bindings.PalaceHolderProperty] = new StringViewDataBridge(PalaceHolderProperty);
+        bridges[(int) Bindings.InputProperty] = new StringViewDataBridge(InputProperty)
+            .OnChanged<string>(OnInputField);
+        bridges[(int) Bindings.PalaceHolderProperty] = new StringViewDataBridge(PalaceHolderProperty)
+            .OnChanged<string>(OnPlaceHolder);
         return bridges;
     }
 
-    public override void OnChangedFromModel<T>(PropertyView<T> propertyView)
+    private void OnInputField(PropertyView<string> input)
     {
-        _inputField.SetTextWithoutNotify(propertyView.As<string>().Value);
-
-        // BUG: Unravel multiple properties bindings update.
-        // _placeHolder.text = propertyView.As<string>().Value;
+        _inputField.SetTextWithoutNotify(input.As<string>().Value);
+    }
+    
+    private void OnPlaceHolder(PropertyView<string> input)
+    {
+        _placeHolder.text = input.As<string>().Value;
     }
 
     private void OnInputChanged(string value)

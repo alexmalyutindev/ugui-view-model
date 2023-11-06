@@ -8,22 +8,29 @@ public abstract class ViewDataBridge
     {
         PropertyName = propertyName;
     }
-    
+
+    public abstract ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange);
     public abstract void Link(BindableView view, PropertyView property);
     public abstract T GetValue<T>();
     public abstract void SetValue<T>(T value);
 }
 
-public class StringViewDataBridge : ViewDataBridge
+public abstract class ViewDataBridge<TValue> : ViewDataBridge
 {
-    private PropertyView<string> _property;
+    protected PropertyView<TValue> _property;
+    protected Action<PropertyView<TValue>> _onChange;
 
+    protected ViewDataBridge(string propertyName) : base(propertyName) { }
+}
+
+public class StringViewDataBridge : ViewDataBridge<string>, IDisposable
+{
     public StringViewDataBridge(string propertyName) : base(propertyName) { }
 
     public override void Link(BindableView view, PropertyView property)
     {
         _property = property.As<string>();
-        _property.Changed += view.OnChangedFromModel;
+        _property.Changed += _onChange;
     }
 
     public override T GetValue<T>()
@@ -33,20 +40,50 @@ public class StringViewDataBridge : ViewDataBridge
 
     public override void SetValue<T>(T value)
     {
-        _property.As<T>().SetFromView(value);
+        if (value is not string stringValue)
+        {
+            throw new Exception($"Bound view has type {typeof(T)}, but property of type {typeof(float)}!");
+        }
+
+        _property.SetFromView(stringValue);
+    }
+
+    public override ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange)
+    {
+        if (onChange is not Action<PropertyView<string>> onChangeString)
+        {
+            throw new Exception();
+        }
+
+        _onChange = onChangeString;
+        return this;
+    }
+
+    public void Dispose()
+    {
+        _property.Changed -= _onChange;
     }
 }
 
-public class FloatViewDataBridge : ViewDataBridge
+public class FloatViewDataBridge : ViewDataBridge<float>, IDisposable
 {
-    private PropertyView<float> _property;
-
     public FloatViewDataBridge(string targetPropertyName) : base(targetPropertyName) { }
+
+    public override ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange)
+    {
+        if (onChange is not Action<PropertyView<float>> onChangeString)
+        {
+            throw new TypeMismatchException(typeof(float), onChange.GetType());
+        }
+
+        _onChange = onChangeString;
+        return this;
+    }
 
     public override void Link(BindableView view, PropertyView property)
     {
         _property = property.As<float>();
-        _property.Changed += view.OnChangedFromModel;
+        _property.Changed += _onChange;
     }
 
     public override T GetValue<T>()
@@ -56,6 +93,23 @@ public class FloatViewDataBridge : ViewDataBridge
 
     public override void SetValue<T>(T value)
     {
-        _property.As<T>().SetFromView(value);
+        if (value is not float floatValue)
+        {
+            throw new TypeMismatchException(typeof(float), typeof(T));
+        }
+
+        _property.SetFromView(floatValue);
     }
+
+    public void Dispose()
+    {
+        _property.Changed -= _onChange;
+    }
+}
+
+public class TypeMismatchException : Exception
+{
+    public TypeMismatchException(Type expected, Type actual) : base(
+        $"Get type {actual.Name}, but expected {expected.Name}"
+    ) { }
 }

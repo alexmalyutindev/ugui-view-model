@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,14 +23,14 @@ public class LabelView : BindableView
 
     protected override ViewDataBridge[] CreateDataBridge()
     {
-        ViewDataBridge bridge = Type switch
+        var bridge = Type switch
         {
-            PropertyType.String => new StringViewDataBridge(PropertyName),
-            PropertyType.Float => new FloatViewDataBridge(PropertyName),
-            _ => new StringViewDataBridge(PropertyName),
+            PropertyType.String => new StringViewDataBridge(PropertyName).OnChanged<string>(OnChanged),
+            PropertyType.Float => new FloatViewDataBridge(PropertyName).OnChanged<float>(OnChanged),
+            _ => throw new Exception($"Can't bind Label to {PropertyName}!"),
         };
 
-        return new ViewDataBridge[] { bridge };
+        return new[] { bridge };
     }
 
     private void Awake()
@@ -37,7 +38,7 @@ public class LabelView : BindableView
         _text = GetComponent<Text>();
     }
 
-    public override void OnChangedFromModel<T>(PropertyView<T> propertyView)
+    private void OnChanged<T>(PropertyView<T> propertyView)
     {
         // TODO: Cache `propertyView` type
         _text.text = propertyView switch

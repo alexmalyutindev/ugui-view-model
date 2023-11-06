@@ -38,11 +38,12 @@ namespace Concept.Editor
 
                     menu.AddSeparator(String.Empty);
 
-                    var fields = viewModelRoot.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+                    var viewModelType = viewModelRoot.GetType();
+                    var fields = viewModelType.GetFields(BindingFlags.Public | BindingFlags.Instance);
                     foreach (var field in fields)
                     {
                         menu.AddItem(
-                            CreateGuiFromFieldInfo(field),
+                            CreateGuiFromFieldInfo(viewModelType, field),
                             false,
                             () =>
                             {
@@ -57,9 +58,26 @@ namespace Concept.Editor
             }
         }
 
-        private static GUIContent CreateGuiFromFieldInfo(FieldInfo field)
+        private static GUIContent CreateGuiFromFieldInfo(Type viewModelType, FieldInfo field)
         {
-            return new GUIContent($"{field.Name} ({field.FieldType.GenericTypeArguments[0].Name})");
+            return new GUIContent($"{viewModelType.Name}/{GetGenericTypeName(field.FieldType)} {field.Name}");
+        }
+
+        private static string GetGenericTypeName(Type type)
+        {
+            return GetTypeName(type.GenericTypeArguments[0]);
+        }
+
+        private static string GetTypeName(Type type)
+        {
+            return type.Name switch
+            {
+                nameof(Int32) => "int",
+                nameof(Single) => "float",
+                nameof(Double) => "double",
+                nameof(String) => "string",
+                _ => type.Name
+            };
         }
     }
 }

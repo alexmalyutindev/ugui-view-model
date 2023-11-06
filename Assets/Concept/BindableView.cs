@@ -8,8 +8,6 @@ public abstract class BindableView : MonoBehaviour
 
     protected abstract ViewDataBridge[] CreateDataBridge();
 
-    public abstract void OnChangedFromModel<T>(PropertyView<T> propertyView);
-
     public void Bind(ViewModelRoot viewModel, Dictionary<string, PropertyView> properties)
     {
         dataBridges = CreateDataBridge();

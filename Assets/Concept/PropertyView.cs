@@ -23,7 +23,7 @@ public class PropertyView<T> : PropertyView
         // TODO: Add model update events queue with filtering!
         Changed?.Invoke(this); // HOTFIX
     }
-    
+
     public void SetFromModel(T value)
     {
         _oldValue = _value;
