@@ -8,9 +8,6 @@ namespace Concept.Editor
     [CustomPropertyDrawer(typeof(ViewModelPropertyAttribute))]
     public class ViewModelPropertyDrawer : PropertyDrawer
     {
-        private static readonly float LabelWidth =
-            EditorGUIUtility.labelWidth + EditorGUIUtility.standardVerticalSpacing;
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var buttonRect = EditorGUI.PrefixLabel(position, label);

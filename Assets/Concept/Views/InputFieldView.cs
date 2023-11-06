@@ -11,8 +11,8 @@ public class InputFieldView : BindableView
 
     private enum Bindings
     {
-        InputProperty = 0,
-        PalaceHolderProperty,
+        Input = 0,
+        PalaceHolder,
         Count
     }
 
@@ -29,9 +29,9 @@ public class InputFieldView : BindableView
     protected override ViewDataBridge[] CreateDataBridge()
     {
         var bridges = new ViewDataBridge[(int) Bindings.Count];
-        bridges[(int) Bindings.InputProperty] = new StringViewDataBridge(InputProperty)
+        bridges[(int) Bindings.Input] = new StringViewDataBridge(InputProperty)
             .OnChanged<string>(OnInputField);
-        bridges[(int) Bindings.PalaceHolderProperty] = new StringViewDataBridge(PalaceHolderProperty)
+        bridges[(int) Bindings.PalaceHolder] = new StringViewDataBridge(PalaceHolderProperty)
             .OnChanged<string>(OnPlaceHolder);
         return bridges;
     }
@@ -48,6 +48,6 @@ public class InputFieldView : BindableView
 
     private void OnInputChanged(string value)
     {
-        dataBridges[(uint) Bindings.InputProperty].SetValue(value);
+        dataBridges[(uint) Bindings.Input].SetValue(value);
     }
 }
