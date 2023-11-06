@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Concept.Editor
 {
-    [CustomPropertyDrawer(typeof(ViewModelPropertyAttribute))]
+    [CustomPropertyDrawer(typeof(ViewModelPropertyNameAttribute))]
     public class ViewModelPropertyDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -73,6 +73,7 @@ namespace Concept.Editor
                 nameof(Single) => "float",
                 nameof(Double) => "double",
                 nameof(String) => "string",
+                nameof(Boolean) => "bool",
                 _ => type.Name
             };
         }

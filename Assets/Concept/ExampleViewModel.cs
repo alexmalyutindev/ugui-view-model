@@ -9,6 +9,15 @@ public partial class ExampleViewModel : ViewModelRoot
     public PropertyView<string> exampleInput;
     public PropertyView<string> exampleInputPlaceholder;
 
+    // TODO: Add attribute to identify model props
+    // [ViewModelProperty("UserName")]
+    public PropertyView<string> userName;
+    public PropertyView<string> userNameText;
+    public PropertyView<string> password;
+    public PropertyView<string> passwordText;
+    public PropertyView<bool> loginButton;
+    public PropertyView<string> loginButtonText;
+    
     [SerializeField]
     private string _exampleString;
     [SerializeField]
@@ -25,6 +34,15 @@ public partial class ExampleViewModel : ViewModelRoot
         exampleLabel.SetFromModel(_exampleString);
         exampleFloat.SetFromModel(_exampleFloat);
         exampleInputPlaceholder.SetFromModel(_exampleInputPlaceHolder);
+
+        userNameText.SetFromModel("User Name");
+        passwordText.SetFromModel("Password");
+        loginButtonText.SetFromModel("Login");
+        loginButton.Changed += view =>
+        {
+            Debug.Log($"{nameof(loginButton)}: {view.OldValue} -> {view.Value}\n" +
+                $"Login with: {userName.Value}: {password.Value}");
+        };
     }
 
     private void OnValidate()
@@ -69,5 +87,13 @@ public partial class ExampleViewModel
         _propertiesCache[nameof(exampleFloat)] = exampleFloat = new();
         _propertiesCache[nameof(exampleInput)] = exampleInput = new();
         _propertiesCache[nameof(exampleInputPlaceholder)] = exampleInputPlaceholder = new();
+        
+        _propertiesCache[nameof(userName)] = userName = new();
+        _propertiesCache[nameof(password)] = password = new();
+        _propertiesCache[nameof(loginButton)] = loginButton = new();
+
+        _propertiesCache[nameof(userNameText)] = userNameText = new();
+        _propertiesCache[nameof(passwordText)] = passwordText = new();
+        _propertiesCache[nameof(loginButtonText)] = loginButtonText = new();
     }
 }

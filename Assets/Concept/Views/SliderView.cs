@@ -5,7 +5,7 @@ namespace Concept
 {
     public class SliderView : BindableView
     {
-        [ViewModelProperty]
+        [ViewModelPropertyName]
         public string PropertyName;
 
         private Slider _slider;

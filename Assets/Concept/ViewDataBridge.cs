@@ -107,6 +107,35 @@ public class FloatViewDataBridge : ViewDataBridge<float>, IDisposable
     }
 }
 
+public class BoolDataBridge : ViewDataBridge<bool>
+{
+    public BoolDataBridge(string propertyName) : base(propertyName) { }
+    public override ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange)
+    {
+        return this;
+    }
+
+    public override void Link(BindableView view, PropertyView property)
+    {
+        _property = property.As<bool>();
+    }
+
+    public override T GetValue<T>()
+    {
+        return _property.As<T>().Value;
+    }
+
+    public override void SetValue<T>(T value)
+    {
+        if (value is not bool boolValue)
+        {
+            throw new TypeMismatchException(typeof(bool), typeof(T));
+        }
+
+        _property.SetFromView(boolValue);
+    }
+}
+
 public class TypeMismatchException : Exception
 {
     public TypeMismatchException(Type expected, Type actual) : base(

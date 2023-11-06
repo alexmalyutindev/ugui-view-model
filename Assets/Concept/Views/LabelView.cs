@@ -12,7 +12,7 @@ public class LabelView : BindableView
         Float
     }
 
-    [ViewModelProperty]
+    [ViewModelPropertyName]
     public string PropertyName;
     [SerializeField]
     private PropertyType Type;

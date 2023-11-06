@@ -4,9 +4,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(InputField))]
 public class InputFieldView : BindableView
 {
-    [ViewModelProperty]
+    [ViewModelPropertyName]
     public string InputProperty;
-    [ViewModelProperty]
+    [ViewModelPropertyName]
     public string PalaceHolderProperty;
 
     private enum Bindings
