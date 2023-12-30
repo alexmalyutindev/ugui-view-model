@@ -13,7 +13,7 @@ public abstract class ViewDataBridge
 
     public abstract void PushValueFromView<T>(T value);
     public abstract void PushValueFromModel<T>(T value);
-    
+
     public static ViewDataBridge<T> Create<T>(string propertyName, Action<IPropertyView<T>> onChange)
     {
         var bridge = new ViewDataBridge<T>(propertyName);
@@ -30,6 +30,8 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
     private Action<IPropertyView<TValue>> _onChangedFromModel;
     private Action<IPropertyView<TValue>> _onChangedFromView;
 
+    private bool _ignoreModelUpdateOneTime;
+
     public ViewDataBridge(string propertyName) : base(propertyName) { }
 
     public override void Link(BindableView view, PropertyView property)
@@ -38,9 +40,21 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
         _viewSide = modelProperty;
         _modelSide = modelProperty;
         // NOTE: _viewSide listen changes from model!
-        _viewSide.Changed += _onChangedFromModel;
+        _viewSide.Changed += OnModelChanged;
         // NOTE: _modelSide listen changes from view!
         _modelSide.Changed += _onChangedFromView;
+    }
+
+    private void OnModelChanged(PropertyView<TValue> propertyView)
+    {
+        if (!_ignoreModelUpdateOneTime)
+        {
+            _onChangedFromModel(propertyView);
+        }
+        else
+        {
+            _ignoreModelUpdateOneTime = false;
+        }
     }
 
     public override void PushValueFromView<T>(T value)
@@ -52,6 +66,8 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
 
         // TODO: Update other subscribed views!
         // TODO: Update commands queues
+
+        _ignoreModelUpdateOneTime = true;
         _viewSide.Set(exactTypeValue);
     }
 
