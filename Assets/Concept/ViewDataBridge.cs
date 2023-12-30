@@ -50,6 +50,8 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
             throw new Exception($"Bound view has type {typeof(T)}, but property of type {typeof(float)}!");
         }
 
+        // TODO: Update other subscribed views!
+        // TODO: Update commands queues
         _viewSide.Set(exactTypeValue);
     }
 

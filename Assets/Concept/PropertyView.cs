@@ -64,6 +64,8 @@ public class PropertyView<T> : PropertyView, INotifiableModelSide<T>, INotifiabl
     {
         _oldValue = _value;
         _value = value;
+        // TODO: Notify other subscribed views!
+        // BUG: Other subscribed views won't be updated!
         Changed?.Invoke(this);
     }
 
