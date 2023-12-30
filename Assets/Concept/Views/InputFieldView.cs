@@ -30,24 +30,24 @@ public class InputFieldView : BindableView
     {
         var bridges = new ViewDataBridge[(int) Bindings.Count];
         bridges[(int) Bindings.Input] = new StringViewDataBridge(InputProperty)
-            .OnChanged<string>(OnInputField);
+            .SubscribeOnModelChanged<string>(OnInputField);
         bridges[(int) Bindings.PalaceHolder] = new StringViewDataBridge(PalaceHolderProperty)
-            .OnChanged<string>(OnPlaceHolder);
+            .SubscribeOnModelChanged<string>(OnPlaceHolder);
         return bridges;
     }
 
-    private void OnInputField(PropertyView<string> input)
+    private void OnInputField(IPropertyView input)
     {
         _inputField.SetTextWithoutNotify(input.As<string>().Value);
     }
     
-    private void OnPlaceHolder(PropertyView<string> input)
+    private void OnPlaceHolder(IPropertyView input)
     {
         _placeHolder.text = input.As<string>().Value;
     }
 
     private void OnInputChanged(string value)
     {
-        dataBridges[(uint) Bindings.Input].SetValue(value);
+        dataBridges[(uint) Bindings.Input].PushValueFromView(value);
     }
 }

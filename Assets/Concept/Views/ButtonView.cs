@@ -20,7 +20,7 @@ public class ButtonView : BindableView
         {
             new BoolDataBridge(Action),
             new StringViewDataBridge(Text)
-                .OnChanged<string>(view => _text.text = view.As<string>().Value),
+                .SubscribeOnModelChanged<string>(view => _text.text = view.As<string>().Value),
         };
     }
 
@@ -33,6 +33,6 @@ public class ButtonView : BindableView
 
     private void OnClick()
     {
-        dataBridge.SetValue(true);
+        dataBridge.PushValueFromView(true);
     }
 }

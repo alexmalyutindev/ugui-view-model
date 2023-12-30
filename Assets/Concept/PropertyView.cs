@@ -1,6 +1,17 @@
 using System;
 
-public abstract class PropertyView
+public interface IPropertyView
+{
+    public PropertyView<T> As<T>();
+}
+
+public interface IPropertyView<out T> : IPropertyView
+{
+    public T Value { get; }
+    public T OldValue { get; }
+}
+
+public abstract class PropertyView : IPropertyView
 {
     public PropertyView<T> As<T>()
     {
@@ -8,29 +19,59 @@ public abstract class PropertyView
     }
 }
 
-public class PropertyView<T> : PropertyView
+// TODO: Inverse INotifiableModelSide and INotifiableViewSide to be consistent:
+// TODO: - Remove crossing of Changed event and Set method.
+
+// Interface to use on Model side to be notified from view and notify view from model
+public interface INotifiableModelSide<T> : IPropertyView<T>
 {
+    // Listen to view changes
+    event Action<PropertyView<T>> Changed;
+    // Update model from view side
+    public void Set(T value);
+}
+
+// Interface to use on View side to be notified from model and notify model from view
+public interface INotifiableViewSide<T> : IPropertyView<T>
+{
+    // Listen to model changes
+    event Action<PropertyView<T>> Changed;
+    // Update model from view side
+    public void Set(T value);
+}
+
+public class PropertyView<T> : PropertyView, INotifiableModelSide<T>, INotifiableViewSide<T>
+{
+    // Notifies when model changes from view side.
     public event Action<PropertyView<T>> Changed;
+
+    event Action<PropertyView<T>> INotifiableViewSide<T>.Changed
+    {
+        add => ChangedFromModel += value;
+        remove => ChangedFromModel -= value;
+    }
+
+    private event Action<PropertyView<T>> ChangedFromModel;
 
     public T Value => _value;
     public T OldValue => _oldValue;
 
-    public void SetFromView(T value)
-    {
-        _oldValue = _value;
-        _value = value;
-        // BUG: Notification from view will not update other views!
-        // TODO: Add model update events queue with filtering!
-        Changed?.Invoke(this); // HOTFIX
-    }
 
-    public void SetFromModel(T value)
+    private T _value;
+    private T _oldValue;
+
+    void INotifiableViewSide<T>.Set(T value)
     {
         _oldValue = _value;
         _value = value;
         Changed?.Invoke(this);
     }
 
-    private T _value;
-    private T _oldValue;
+    // Sets value from model side and notify view.
+    public void Set(T value)
+    {
+        _oldValue = _value;
+        _value = value;
+        ChangedFromModel?.Invoke(this);
+    }
 }

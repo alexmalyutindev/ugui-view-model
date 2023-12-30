@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace Concept
@@ -20,11 +19,11 @@ namespace Concept
         {
             return new ViewDataBridge[]
             {
-                new FloatViewDataBridge(PropertyName).OnChanged<float>(OnChanged)
+                new FloatViewDataBridge(PropertyName).SubscribeOnModelChanged<float>(OnChanged)
             };
         }
 
-        private void OnChanged<T>(PropertyView<T> propertyView)
+        private void OnChanged<T>(IPropertyView<T> propertyView)
         {
             float value = propertyView switch
             {
@@ -39,7 +38,7 @@ namespace Concept
 
         private void OnSliderChanged(float value)
         {
-            dataBridge.SetValue(value);
+            dataBridge.PushValueFromView(value);
         }
     }
 }

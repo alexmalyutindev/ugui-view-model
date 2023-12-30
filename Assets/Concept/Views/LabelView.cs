@@ -25,8 +25,8 @@ public class LabelView : BindableView
     {
         var bridge = Type switch
         {
-            PropertyType.String => new StringViewDataBridge(PropertyName).OnChanged<string>(OnChanged),
-            PropertyType.Float => new FloatViewDataBridge(PropertyName).OnChanged<float>(OnChanged),
+            PropertyType.String => new StringViewDataBridge(PropertyName).SubscribeOnModelChanged<string>(OnChanged),
+            PropertyType.Float => new FloatViewDataBridge(PropertyName).SubscribeOnModelChanged<float>(OnChanged),
             _ => throw new Exception($"Can't bind Label to {PropertyName}!"),
         };
 
@@ -38,14 +38,14 @@ public class LabelView : BindableView
         _text = GetComponent<Text>();
     }
 
-    private void OnChanged<T>(PropertyView<T> propertyView)
+    private void OnChanged<T>(IPropertyView<T> propertyView)
     {
         // TODO: Cache `propertyView` type
         _text.text = propertyView switch
         {
-            PropertyView<string> s => s.Value,
-            PropertyView<float> f => f.Value.ToString(Format),
-            PropertyView<int> i => i.Value.ToString(Format),
+            IPropertyView<string> s => s.Value,
+            IPropertyView<float> f => f.Value.ToString(Format),
+            IPropertyView<int> i => i.Value.ToString(Format),
             _ => throw new BridgeTypeException(PropertyName, propertyView, dataBridge)
         };
     }

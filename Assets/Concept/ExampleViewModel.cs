@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -31,13 +30,13 @@ public partial class ExampleViewModel : ViewModelRoot
 
     private void Start()
     {
-        exampleLabel.SetFromModel(_exampleString);
-        exampleFloat.SetFromModel(_exampleFloat);
-        exampleInputPlaceholder.SetFromModel(_exampleInputPlaceHolder);
+        exampleLabel.Set(_exampleString);
+        exampleFloat.Set(_exampleFloat);
+        exampleInputPlaceholder.Set(_exampleInputPlaceHolder);
 
-        userNameText.SetFromModel("User Name");
-        passwordText.SetFromModel("Password");
-        loginButtonText.SetFromModel("Login");
+        userNameText.Set("User Name");
+        passwordText.Set("Password");
+        loginButtonText.Set("Login");
         loginButton.Changed += view =>
         {
             Debug.Log($"{nameof(loginButton)}: {view.OldValue} -> {view.Value}\n" +
@@ -47,9 +46,9 @@ public partial class ExampleViewModel : ViewModelRoot
 
     private void OnValidate()
     {
-        exampleLabel?.SetFromModel(_exampleString);
-        exampleFloat?.SetFromModel(_exampleFloat);
-        exampleInputPlaceholder?.SetFromModel(_exampleInputPlaceHolder);
+        exampleLabel?.Set(_exampleString);
+        exampleFloat?.Set(_exampleFloat);
+        exampleInputPlaceholder?.Set(_exampleInputPlaceHolder);
     }
 
     private void OnGUI()

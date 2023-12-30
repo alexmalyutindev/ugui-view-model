@@ -9,131 +9,87 @@ public abstract class ViewDataBridge
         PropertyName = propertyName;
     }
 
-    public abstract ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange);
+    public abstract ViewDataBridge SubscribeOnModelChanged<T>(Action<IPropertyView<T>> onChange);
+
     public abstract void Link(BindableView view, PropertyView property);
-    public abstract T GetValue<T>();
-    public abstract void SetValue<T>(T value);
+
+    // public abstract T GetValue<T>();
+    public abstract void PushValueFromView<T>(T value);
+    public abstract void PushValueFromModel<T>(T value);
 }
 
-public abstract class ViewDataBridge<TValue> : ViewDataBridge
+public abstract class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
 {
-    protected PropertyView<TValue> _property;
-    protected Action<PropertyView<TValue>> _onChange;
+    private INotifiableViewSide<TValue> _viewSide;
+    private INotifiableModelSide<TValue> _modelSide;
+
+    private Action<IPropertyView<TValue>> _onChangedFromModel;
+    private Action<IPropertyView<TValue>> _onChangedFromView;
 
     protected ViewDataBridge(string propertyName) : base(propertyName) { }
-}
-
-public class StringViewDataBridge : ViewDataBridge<string>, IDisposable
-{
-    public StringViewDataBridge(string propertyName) : base(propertyName) { }
 
     public override void Link(BindableView view, PropertyView property)
     {
-        _property = property.As<string>();
-        _property.Changed += _onChange;
+        var modelProperty = property.As<TValue>();
+        _viewSide = modelProperty;
+        _modelSide = modelProperty;
+        // NOTE: _viewSide listen changes from model!
+        _viewSide.Changed += _onChangedFromModel;
+        // NOTE: _modelSide listen changes from view!
+        _modelSide.Changed += _onChangedFromView;
     }
 
-    public override T GetValue<T>()
+    public override void PushValueFromView<T>(T value)
     {
-        return _property.As<T>().Value;
-    }
-
-    public override void SetValue<T>(T value)
-    {
-        if (value is not string stringValue)
+        if (value is not TValue exactTypeValue)
         {
             throw new Exception($"Bound view has type {typeof(T)}, but property of type {typeof(float)}!");
         }
 
-        _property.SetFromView(stringValue);
+        _viewSide.Set(exactTypeValue);
     }
 
-    public override ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange)
+    public override void PushValueFromModel<T>(T value)
     {
-        if (onChange is not Action<PropertyView<string>> onChangeString)
+        if (value is not TValue exactTypeValue)
         {
-            throw new Exception();
+            throw new Exception($"Bound view has type {typeof(T)}, but property of type {typeof(float)}!");
         }
 
-        _onChange = onChangeString;
+        _modelSide.Set(exactTypeValue);
+    }
+
+    public override ViewDataBridge SubscribeOnModelChanged<T>(Action<IPropertyView<T>> onChange)
+    {
+        if (onChange is not Action<IPropertyView<TValue>> onChangeExact)
+        {
+            throw new TypeMismatchException(typeof(float), onChange.GetType());
+        }
+
+        _onChangedFromModel = onChangeExact;
         return this;
     }
 
     public void Dispose()
     {
-        _property.Changed -= _onChange;
+        _viewSide.Changed -= _onChangedFromModel;
+        _modelSide.Changed -= _onChangedFromView;
     }
+}
+
+public class StringViewDataBridge : ViewDataBridge<string>
+{
+    public StringViewDataBridge(string propertyName) : base(propertyName) { }
 }
 
 public class FloatViewDataBridge : ViewDataBridge<float>, IDisposable
 {
     public FloatViewDataBridge(string targetPropertyName) : base(targetPropertyName) { }
-
-    public override ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange)
-    {
-        if (onChange is not Action<PropertyView<float>> onChangeString)
-        {
-            throw new TypeMismatchException(typeof(float), onChange.GetType());
-        }
-
-        _onChange = onChangeString;
-        return this;
-    }
-
-    public override void Link(BindableView view, PropertyView property)
-    {
-        _property = property.As<float>();
-        _property.Changed += _onChange;
-    }
-
-    public override T GetValue<T>()
-    {
-        return _property.As<T>().Value;
-    }
-
-    public override void SetValue<T>(T value)
-    {
-        if (value is not float floatValue)
-        {
-            throw new TypeMismatchException(typeof(float), typeof(T));
-        }
-
-        _property.SetFromView(floatValue);
-    }
-
-    public void Dispose()
-    {
-        _property.Changed -= _onChange;
-    }
 }
 
 public class BoolDataBridge : ViewDataBridge<bool>
 {
     public BoolDataBridge(string propertyName) : base(propertyName) { }
-    public override ViewDataBridge OnChanged<T>(Action<PropertyView<T>> onChange)
-    {
-        return this;
-    }
-
-    public override void Link(BindableView view, PropertyView property)
-    {
-        _property = property.As<bool>();
-    }
-
-    public override T GetValue<T>()
-    {
-        return _property.As<T>().Value;
-    }
-
-    public override void SetValue<T>(T value)
-    {
-        if (value is not bool boolValue)
-        {
-            throw new TypeMismatchException(typeof(bool), typeof(T));
-        }
-
-        _property.SetFromView(boolValue);
-    }
 }
 
 public class TypeMismatchException : Exception
