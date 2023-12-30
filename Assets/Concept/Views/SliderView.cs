@@ -19,7 +19,8 @@ namespace Concept
         {
             return new ViewDataBridge[]
             {
-                new FloatViewDataBridge(PropertyName).SubscribeOnModelChanged<float>(OnChanged)
+                // TODO: Infer type from property type.
+                ViewDataBridge.Create<float>(PropertyName, OnChanged),
             };
         }
 

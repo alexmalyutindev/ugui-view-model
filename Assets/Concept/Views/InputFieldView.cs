@@ -29,10 +29,9 @@ public class InputFieldView : BindableView
     protected override ViewDataBridge[] CreateDataBridge()
     {
         var bridges = new ViewDataBridge[(int) Bindings.Count];
-        bridges[(int) Bindings.Input] = new StringViewDataBridge(InputProperty)
-            .SubscribeOnModelChanged<string>(OnInputField);
-        bridges[(int) Bindings.PalaceHolder] = new StringViewDataBridge(PalaceHolderProperty)
-            .SubscribeOnModelChanged<string>(OnPlaceHolder);
+        // TODO: Make generic inferable!
+        bridges[(int) Bindings.Input] = ViewDataBridge.Create<string>(InputProperty, OnInputField);
+        bridges[(int) Bindings.PalaceHolder] = ViewDataBridge.Create<string>(PalaceHolderProperty, OnPlaceHolder);
         return bridges;
     }
 

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Text))]
@@ -14,19 +15,25 @@ public class LabelView : BindableView
 
     [ViewModelPropertyName]
     public string PropertyName;
-    [SerializeField]
-    private PropertyType Type;
 
-    public string Format;
+    // TODO: Infer type from target property type
+    [FormerlySerializedAs("Type")]
+    [SerializeField]
+    private PropertyType _type;
+
+    [FormerlySerializedAs("Format")]
+    [SerializeField]
+    private string _format;
 
     private Text _text;
 
     protected override ViewDataBridge[] CreateDataBridge()
     {
-        var bridge = Type switch
+        ViewDataBridge bridge = _type switch
         {
-            PropertyType.String => new StringViewDataBridge(PropertyName).SubscribeOnModelChanged<string>(OnChanged),
-            PropertyType.Float => new FloatViewDataBridge(PropertyName).SubscribeOnModelChanged<float>(OnChanged),
+            PropertyType.String => ViewDataBridge.Create<string>(PropertyName, OnChanged), 
+            PropertyType.Float => ViewDataBridge.Create<float>(PropertyName, OnChanged),
+            PropertyType.Int => ViewDataBridge.Create<int>(PropertyName, OnChanged),
             _ => throw new Exception($"Can't bind Label to {PropertyName}!"),
         };
 
@@ -44,8 +51,8 @@ public class LabelView : BindableView
         _text.text = propertyView switch
         {
             IPropertyView<string> s => s.Value,
-            IPropertyView<float> f => f.Value.ToString(Format),
-            IPropertyView<int> i => i.Value.ToString(Format),
+            IPropertyView<float> f => f.Value.ToString(_format),
+            IPropertyView<int> i => i.Value.ToString(_format),
             _ => throw new BridgeTypeException(PropertyName, propertyView, dataBridge)
         };
     }

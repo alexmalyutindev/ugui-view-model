@@ -258,6 +258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Action: loginButton
+  Intercatable: loginButtonActive
   Text: loginButtonText
 --- !u!1 &59961810
 GameObject:
@@ -682,7 +683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a760976a469244a8901e1df2c47c4d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PropertyName: exampleFloat
+  PropertyName: floatSlider
 --- !u!114 &370930317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -968,9 +969,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a51ec2ae15e24e34833c3058c9dee251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PropertyName: exampleLabel
-  Type: 0
-  Format: 
+  PropertyName: headerName
+  _type: 0
+  _format: 
 --- !u!1 &735934518
 GameObject:
   m_ObjectHideFlags: 0
@@ -1894,9 +1895,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a51ec2ae15e24e34833c3058c9dee251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PropertyName: exampleFloat
-  Type: 2
-  Format: 0.00
+  PropertyName: floatSlider
+  _type: 2
+  _format: 0.00
 --- !u!114 &1473690901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1996,14 +1997,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Color: {r: 0.7735849, g: 0.7735849, b: 0.7735849, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

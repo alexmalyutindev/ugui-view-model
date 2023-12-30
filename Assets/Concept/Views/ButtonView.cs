@@ -1,13 +1,13 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
 public class ButtonView : BindableView
 {
-    [FormerlySerializedAs("PropertyName")]
     [ViewModelPropertyName]
     public string Action;
+    [ViewModelPropertyName]
+    public string Intercatable;
     [ViewModelPropertyName]
     public string Text;
 
@@ -19,9 +19,19 @@ public class ButtonView : BindableView
         return new ViewDataBridge[]
         {
             new BoolDataBridge(Action),
-            new StringViewDataBridge(Text)
-                .SubscribeOnModelChanged<string>(view => _text.text = view.As<string>().Value),
+            ViewDataBridge.Create<bool>(Intercatable, SetInteractable),
+            ViewDataBridge.Create<string>(Text, SetButtonText),
         };
+    }
+
+    private void SetInteractable(IPropertyView<bool> view)
+    {
+        _button.interactable = view.Value;
+    }
+
+    private void SetButtonText(IPropertyView<string> view)
+    {
+        _text.text = view.As<string>().Value;
     }
 
     private void Awake()

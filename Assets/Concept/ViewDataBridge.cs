@@ -9,16 +9,20 @@ public abstract class ViewDataBridge
         PropertyName = propertyName;
     }
 
-    public abstract ViewDataBridge SubscribeOnModelChanged<T>(Action<IPropertyView<T>> onChange);
-
     public abstract void Link(BindableView view, PropertyView property);
 
-    // public abstract T GetValue<T>();
     public abstract void PushValueFromView<T>(T value);
     public abstract void PushValueFromModel<T>(T value);
+    
+    public static ViewDataBridge<T> Create<T>(string propertyName, Action<IPropertyView<T>> onChange)
+    {
+        var bridge = new ViewDataBridge<T>(propertyName);
+        bridge.SubscribeOnModelChanged(onChange);
+        return bridge;
+    }
 }
 
-public abstract class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
+public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
 {
     private INotifiableViewSide<TValue> _viewSide;
     private INotifiableModelSide<TValue> _modelSide;
@@ -26,7 +30,7 @@ public abstract class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
     private Action<IPropertyView<TValue>> _onChangedFromModel;
     private Action<IPropertyView<TValue>> _onChangedFromView;
 
-    protected ViewDataBridge(string propertyName) : base(propertyName) { }
+    public ViewDataBridge(string propertyName) : base(propertyName) { }
 
     public override void Link(BindableView view, PropertyView property)
     {
@@ -51,15 +55,15 @@ public abstract class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
 
     public override void PushValueFromModel<T>(T value)
     {
-        if (value is not TValue exactTypeValue)
+        if (value is not TValue valueExact)
         {
             throw new Exception($"Bound view has type {typeof(T)}, but property of type {typeof(float)}!");
         }
 
-        _modelSide.Set(exactTypeValue);
+        _modelSide.Set(valueExact);
     }
 
-    public override ViewDataBridge SubscribeOnModelChanged<T>(Action<IPropertyView<T>> onChange)
+    public ViewDataBridge<TValue> SubscribeOnModelChanged<T>(Action<IPropertyView<T>> onChange)
     {
         if (onChange is not Action<IPropertyView<TValue>> onChangeExact)
         {
@@ -75,16 +79,6 @@ public abstract class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
         _viewSide.Changed -= _onChangedFromModel;
         _modelSide.Changed -= _onChangedFromView;
     }
-}
-
-public class StringViewDataBridge : ViewDataBridge<string>
-{
-    public StringViewDataBridge(string propertyName) : base(propertyName) { }
-}
-
-public class FloatViewDataBridge : ViewDataBridge<float>, IDisposable
-{
-    public FloatViewDataBridge(string targetPropertyName) : base(targetPropertyName) { }
 }
 
 public class BoolDataBridge : ViewDataBridge<bool>
