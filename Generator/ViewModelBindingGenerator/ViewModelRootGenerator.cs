@@ -38,24 +38,12 @@ public class ViewModelRootGenerator : ISourceGenerator
                         sb.Append('\t', indent).AppendLine("protected override void InitPropertiesCache()");
                         sb.Append('\t', indent).AppendLine("{");
                         indent++;
-                        foreach (var child in classInfo.ClassNode.ChildNodes())
-                        {
-                            if (child is FieldDeclarationSyntax fieldNode)
-                            {
-                                foreach (var variable in fieldNode.Declaration.Variables)
-                                {
-                                    var type = fieldNode.Declaration.Type;
-                                    if (type.GetFirstToken().Text != "PropertyView")
-                                    {
-                                        continue;
-                                    }
 
-                                    var variableName = variable.Identifier.Text;
-                                    sb.Append('\t', indent).AppendLine(
-                                        $"_propertiesCache[nameof({variableName})] = {variableName} = new();"
-                                    );
-                                }
-                            }
+                        foreach (var property in classInfo.Properties)
+                        {
+                            sb.Append('\t', indent).AppendLine(
+                                $"_propertiesCache[nameof({property})] = {property} = new();"
+                            );
                         }
 
                         indent--;
@@ -101,12 +89,33 @@ public class ViewModelRootGenerator : ISourceGenerator
                                 namespaceName = namespaceNode.Name.ToFullString();
                             }
 
+                            var properties = new List<string>();
+                            foreach (var childNode in classNode.ChildNodes())
+                            {
+                                if (childNode is not FieldDeclarationSyntax fieldNode)
+                                {
+                                    continue;
+                                }
+
+                                foreach (var variable in fieldNode.Declaration.Variables)
+                                {
+                                    var type = fieldNode.Declaration.Type;
+                                    if (type.GetFirstToken().Text != "PropertyView")
+                                    {
+                                        continue;
+                                    }
+
+                                    var fieldName = variable.Identifier.Text;
+                                    properties.Add(fieldName);
+                                }
+                            }
+
                             ClassesWithAttributes.Add(
                                 new ClassInfo
                                 {
                                     ClassNode = classNode,
                                     Name = classNode.Identifier.Text,
-                                    // TargetType = targetTypeName,
+                                    Properties = properties,
                                     Namespace = namespaceName
                                 }
                             );
@@ -123,7 +132,7 @@ public class ViewModelRootGenerator : ISourceGenerator
             public ClassDeclarationSyntax ClassNode;
             public string Name;
             public string Namespace;
-            // public string TargetType;
+            public List<string> Properties;
         }
     }
 }
