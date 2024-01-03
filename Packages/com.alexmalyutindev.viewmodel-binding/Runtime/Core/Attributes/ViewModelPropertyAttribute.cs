@@ -1,6 +1,6 @@
 using System;
 
-namespace Example
+namespace AlexMalyutinDev.ViewModelBinding
 {
     public class ViewModelPropertyAttribute : Attribute
     {

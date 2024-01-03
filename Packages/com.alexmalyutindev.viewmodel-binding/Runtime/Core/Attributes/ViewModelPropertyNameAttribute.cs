@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ViewModelPropertyNameAttribute : PropertyAttribute
+namespace AlexMalyutinDev.ViewModelBinding
 {
-    
+    public class ViewModelPropertyNameAttribute : PropertyAttribute { }
 }

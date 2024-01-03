@@ -1,26 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ViewModelRoot : MonoBehaviour
+namespace AlexMalyutinDev.ViewModelBinding
 {
-    protected Dictionary<string, PropertyView> _propertiesCache = new();
-
-    protected abstract void InitPropertiesCache();
-    protected virtual void OnAwake() { }
-
-    private void Awake()
+    public abstract class ViewModelRoot : MonoBehaviour
     {
-        InitPropertiesCache();
-        InitBindings();
-        OnAwake();
-    }
+        protected Dictionary<string, PropertyView> _propertiesCache = new();
 
-    private void InitBindings()
-    {
-        var bindableViews = GetComponentsInChildren<BindableView>();
-        foreach (var bindableView in bindableViews)
+        protected abstract void InitPropertiesCache();
+        protected virtual void OnAwake() { }
+
+        private void Awake()
         {
-            bindableView.Bind(this, _propertiesCache);
+            InitPropertiesCache();
+            InitBindings();
+            OnAwake();
+        }
+
+        private void InitBindings()
+        {
+            var bindableViews = GetComponentsInChildren<BindableView>();
+            foreach (var bindableView in bindableViews)
+            {
+                bindableView.Bind(this, _propertiesCache);
+            }
         }
     }
 }

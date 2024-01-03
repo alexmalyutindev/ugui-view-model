@@ -1,45 +1,48 @@
 using UnityEngine.UI;
 
-namespace Concept
+namespace AlexMalyutinDev.ViewModelBinding
 {
-    public class SliderView : BindableView
+    namespace Concept
     {
-        [ViewModelPropertyName]
-        public string PropertyName;
-
-        private Slider _slider;
-
-        private void Awake()
+        public class SliderView : BindableView
         {
-            _slider = GetComponent<Slider>();
-            _slider.onValueChanged.AddListener(OnSliderChanged);
-        }
+            [ViewModelPropertyName]
+            public string PropertyName;
 
-        protected override ViewDataBridge[] CreateDataBridge()
-        {
-            return new ViewDataBridge[]
+            private Slider _slider;
+
+            private void Awake()
             {
-                // TODO: Infer type from property type.
-                ViewDataBridge.Create<float>(PropertyName, OnChanged),
-            };
-        }
+                _slider = GetComponent<Slider>();
+                _slider.onValueChanged.AddListener(OnSliderChanged);
+            }
 
-        private void OnChanged<T>(IPropertyView<T> propertyView)
-        {
-            float value = propertyView switch
+            protected override ViewDataBridge[] CreateDataBridge()
             {
-                PropertyView<float> f => f.Value,
-                PropertyView<int> i => i.Value,
-                PropertyView<string> s => float.Parse(s.Value),
-                _ => throw new BridgeTypeException(PropertyName, propertyView, dataBridge),
-            };
+                return new ViewDataBridge[]
+                {
+                    // TODO: Infer type from property type.
+                    ViewDataBridge.Create<float>(PropertyName, OnChanged),
+                };
+            }
 
-            _slider.SetValueWithoutNotify(value);
-        }
+            private void OnChanged<T>(IPropertyView<T> propertyView)
+            {
+                float value = propertyView switch
+                {
+                    PropertyView<float> f => f.Value,
+                    PropertyView<int> i => i.Value,
+                    PropertyView<string> s => float.Parse(s.Value),
+                    _ => throw new BridgeTypeException(PropertyName, propertyView, dataBridge),
+                };
 
-        private void OnSliderChanged(float value)
-        {
-            dataBridge.PushValueFromView(value);
+                _slider.SetValueWithoutNotify(value);
+            }
+
+            private void OnSliderChanged(float value)
+            {
+                dataBridge.PushValueFromView(value);
+            }
         }
     }
 }

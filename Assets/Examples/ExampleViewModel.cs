@@ -1,3 +1,4 @@
+using AlexMalyutinDev.ViewModelBinding;
 using UnityEngine;
 using UnityEngine.Serialization;
 

@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Concept.Editor
+namespace AlexMalyutinDev.ViewModelBinding.Editor
 {
     [CustomPropertyDrawer(typeof(ViewModelPropertyNameAttribute))]
     public class ViewModelPropertyDrawer : PropertyDrawer

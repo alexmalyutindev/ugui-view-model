@@ -1,52 +1,55 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(InputField))]
-public class InputFieldView : BindableView
+namespace AlexMalyutinDev.ViewModelBinding
 {
-    [ViewModelPropertyName]
-    public string InputProperty;
-    [ViewModelPropertyName]
-    public string PalaceHolderProperty;
-
-    private enum Bindings
+    [RequireComponent(typeof(InputField))]
+    public class InputFieldView : BindableView
     {
-        Input = 0,
-        PalaceHolder,
-        Count
-    }
+        [ViewModelPropertyName]
+        public string InputProperty;
+        [ViewModelPropertyName]
+        public string PalaceHolderProperty;
 
-    private InputField _inputField;
-    private Text _placeHolder;
+        private enum Bindings
+        {
+            Input = 0,
+            PalaceHolder,
+            Count
+        }
 
-    private void Awake()
-    {
-        _inputField = GetComponent<InputField>();
-        _placeHolder = _inputField.placeholder.GetComponent<Text>();
-        _inputField.onValueChanged.AddListener(OnInputChanged);
-    }
+        private InputField _inputField;
+        private Text _placeHolder;
 
-    protected override ViewDataBridge[] CreateDataBridge()
-    {
-        var bridges = new ViewDataBridge[(int) Bindings.Count];
-        // TODO: Make generic inferable!
-        bridges[(int) Bindings.Input] = ViewDataBridge.Create<string>(InputProperty, OnInputField);
-        bridges[(int) Bindings.PalaceHolder] = ViewDataBridge.Create<string>(PalaceHolderProperty, OnPlaceHolder);
-        return bridges;
-    }
+        private void Awake()
+        {
+            _inputField = GetComponent<InputField>();
+            _placeHolder = _inputField.placeholder.GetComponent<Text>();
+            _inputField.onValueChanged.AddListener(OnInputChanged);
+        }
 
-    private void OnInputField(IPropertyView input)
-    {
-        _inputField.SetTextWithoutNotify(input.As<string>().Value);
-    }
-    
-    private void OnPlaceHolder(IPropertyView input)
-    {
-        _placeHolder.text = input.As<string>().Value;
-    }
+        protected override ViewDataBridge[] CreateDataBridge()
+        {
+            var bridges = new ViewDataBridge[(int) Bindings.Count];
+            // TODO: Make generic inferable!
+            bridges[(int) Bindings.Input] = ViewDataBridge.Create<string>(InputProperty, OnInputField);
+            bridges[(int) Bindings.PalaceHolder] = ViewDataBridge.Create<string>(PalaceHolderProperty, OnPlaceHolder);
+            return bridges;
+        }
 
-    private void OnInputChanged(string value)
-    {
-        dataBridges[(uint) Bindings.Input].PushValueFromView(value);
+        private void OnInputField(IPropertyView input)
+        {
+            _inputField.SetTextWithoutNotify(input.As<string>().Value);
+        }
+
+        private void OnPlaceHolder(IPropertyView input)
+        {
+            _placeHolder.text = input.As<string>().Value;
+        }
+
+        private void OnInputChanged(string value)
+        {
+            dataBridges[(uint) Bindings.Input].PushValueFromView(value);
+        }
     }
 }

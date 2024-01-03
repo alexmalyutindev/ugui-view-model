@@ -1,6 +1,6 @@
 {
     "name": "AlexMalyutinDev.ViewModelBinding.Editor",
-    "rootNamespace": "AlexMalyutinDev.ViewModelBinding.Editor",
+    "rootNamespace": "AlexMalyutinDev",
     "references": [
         "AlexMalyutinDev.ViewModelBinding"
     ],

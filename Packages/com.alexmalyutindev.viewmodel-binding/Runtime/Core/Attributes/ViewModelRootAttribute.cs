@@ -1,4 +1,7 @@
 using System;
 
-[AttributeUsage(AttributeTargets.Class)]
-public class ViewModelRootAttribute : Attribute { }
+namespace AlexMalyutinDev.ViewModelBinding
+{
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ViewModelRootAttribute : Attribute { }
+}

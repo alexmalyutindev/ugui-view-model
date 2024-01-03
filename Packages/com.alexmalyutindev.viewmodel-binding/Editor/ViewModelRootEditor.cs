@@ -2,7 +2,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Concept.Editor
+namespace AlexMalyutinDev.ViewModelBinding.Editor
 {
     [CustomEditor(typeof(ViewModelRoot), editorForChildClasses: true)]
     public class ViewModelRootEditor : UnityEditor.Editor
