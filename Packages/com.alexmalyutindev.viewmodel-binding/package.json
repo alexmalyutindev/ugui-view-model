@@ -1,0 +1,7 @@
+{
+  "name": "com.alexmalyutindev.ugui-viewmodel",
+  "displayName": "UGUI ViewModel",
+  "version": "0.0.1",
+  "unity": "2022.3",
+  "description": "Unity's UGUI ViewModel Bindings."
+}

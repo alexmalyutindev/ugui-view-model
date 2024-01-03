@@ -10,7 +10,7 @@ namespace Example
         public PropertyView<float> floatSlider;
 
         // TODO: Add attribute to identify model props
-        // [ViewModelProperty("UserName")]
+        [ViewModelProperty("UserName")]
         public PropertyView<string> userName;
         public PropertyView<string> userNameText;
         public PropertyView<string> password;
