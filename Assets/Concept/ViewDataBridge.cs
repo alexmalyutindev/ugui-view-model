@@ -36,9 +36,13 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
 
     public override void Link(BindableView view, PropertyView property)
     {
-        var modelProperty = property.As<TValue>();
-        _viewSide = modelProperty;
-        _modelSide = modelProperty;
+        if (property is not PropertyView<TValue> exactProperty)
+        {
+            throw new TypeMismatchException(typeof(TValue), property.GetType().GetGenericArguments()[0]);
+        }
+        
+        _viewSide = exactProperty;
+        _modelSide = exactProperty;
         // NOTE: _viewSide listen changes from model!
         _viewSide.Changed += OnModelChanged;
         // NOTE: _modelSide listen changes from view!
@@ -61,7 +65,7 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
     {
         if (value is not TValue exactTypeValue)
         {
-            throw new Exception($"Bound view has type {typeof(T)}, but property of type {typeof(float)}!");
+            throw new TypeMismatchException(typeof(TValue), typeof(T));
         }
 
         // TODO: Update other subscribed views!
@@ -75,7 +79,7 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
     {
         if (value is not TValue valueExact)
         {
-            throw new Exception($"Bound view has type {typeof(T)}, but property of type {typeof(float)}!");
+            throw new TypeMismatchException(typeof(TValue), typeof(T));
         }
 
         _modelSide.Set(valueExact);
@@ -85,7 +89,7 @@ public class ViewDataBridge<TValue> : ViewDataBridge, IDisposable
     {
         if (onChange is not Action<IPropertyView<TValue>> onChangeExact)
         {
-            throw new TypeMismatchException(typeof(float), onChange.GetType());
+            throw new TypeMismatchException(typeof(TValue), typeof(T));
         }
 
         _onChangedFromModel = onChangeExact;
