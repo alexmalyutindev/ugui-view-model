@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Generator</RootNamespace>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <LangVersion>11</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.CodeAnalysis" Version="3.8.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.8.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="obj\" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="cp bin/Release/netstandard2.0/ViewModelBindingGenerator.dll ../../Assets/Concept/ViewModelBindingGenerator.dll&#xA;" />
+    </Target>
+
+</Project>
