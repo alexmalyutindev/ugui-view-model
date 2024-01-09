@@ -28,34 +28,28 @@ public class ViewModelRootGenerator : ISourceGenerator
                 var sb = new StringBuilder();
                 var indent = 0;
 
-                sb.Append("namespace ").Append(classInfo.Namespace).AppendLine("{");
+                sb.Append("namespace ").AppendLine(classInfo.Namespace).BeginBlock(ref indent);
                 {
-                    indent++;
-                    sb.Append('\t', indent).Append("public partial class ").AppendLine(classInfo.Name);
-                    sb.Append('\t', indent).AppendLine("{");
+                    sb.BeginClass("public partial", classInfo.Name, ref indent);
                     {
-                        indent++;
-                        sb.Append('\t', indent).AppendLine("protected override void InitPropertiesCache()");
-                        sb.Append('\t', indent).AppendLine("{");
-                        indent++;
-
-                        foreach (var property in classInfo.Properties)
+                        sb.BeginMethod("protected override void InitPropertiesCache()", ref indent);
                         {
-                            sb.Append('\t', indent).AppendLine(
-                                $"_propertiesCache[nameof({property})] = {property} = new();"
-                            );
+                            foreach (var property in classInfo.Properties)
+                            {
+                                sb.Append('\t', indent).AppendLine(
+                                    $"_propertiesCache[nameof({property})] = {property} = new();"
+                                );
+                            }
                         }
+                        sb.EndMethod(ref indent);
 
-                        indent--;
-                        sb.Append('\t', indent).AppendLine("}");
-
-                        sb.Append('\t', indent).Append("public string GetInfo() => \"").Append(classInfo.Name)
-                            .AppendLine("\";");
+                        sb.BeginMethod("public string GetInfo()", ref indent);
+                        sb.Tab(indent).Append("return \"").Append(classInfo.Name).AppendLine("\";");
+                        sb.EndMethod(ref indent);
                     }
-                    indent--;
-                    sb.Append('\t', indent).AppendLine("}");
+                    sb.EndClass(ref indent);
                 }
-                sb.AppendLine("}");
+                sb.EndBlock(ref indent);
 
                 context.AddSource($"{classInfo.Name}.g", sb.ToString());
             }
@@ -86,7 +80,7 @@ public class ViewModelRootGenerator : ISourceGenerator
                             var namespaceName = "";
                             if (classNode.Parent is NamespaceDeclarationSyntax namespaceNode)
                             {
-                                namespaceName = namespaceNode.Name.ToFullString();
+                                namespaceName = namespaceNode.Name.ToString();
                             }
 
                             var properties = new List<string>();
@@ -127,7 +121,7 @@ public class ViewModelRootGenerator : ISourceGenerator
             }
         }
 
-        public class ClassInfo
+        public struct ClassInfo
         {
             public ClassDeclarationSyntax ClassNode;
             public string Name;
