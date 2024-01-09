@@ -25,31 +25,27 @@ public class ViewModelRootGenerator : ISourceGenerator
 
             foreach (var classInfo in receiver.ClassesWithAttributes)
             {
-                var sb = new StringBuilder();
-                var indent = 0;
-
-                sb.Append("namespace ").AppendLine(classInfo.Namespace).BeginBlock(ref indent);
+                var sb = new SourceBuilder();
+                using (sb.Namespace(classInfo.Namespace))
                 {
-                    sb.BeginClass("public partial", classInfo.Name, ref indent);
+                    using (sb.Class("public partial", classInfo.Name))
                     {
-                        sb.BeginMethod("protected override void InitPropertiesCache()", ref indent);
+                        using (sb.Method("protected override void InitPropertiesCache()"))
                         {
                             foreach (var property in classInfo.Properties)
                             {
-                                sb.Append('\t', indent).AppendLine(
+                                sb.AppendLine(
                                     $"_propertiesCache[nameof({property})] = {property} = new();"
                                 );
                             }
                         }
-                        sb.EndMethod(ref indent);
 
-                        sb.BeginMethod("public string GetInfo()", ref indent);
-                        sb.Tab(indent).Append("return \"").Append(classInfo.Name).AppendLine("\";");
-                        sb.EndMethod(ref indent);
+                        using (sb.Method("public string GetInfo()"))
+                        {
+                            sb.BeginLine("return \"").Append(classInfo.Name).Append('\"').EndLine();
+                        }
                     }
-                    sb.EndClass(ref indent);
                 }
-                sb.EndBlock(ref indent);
 
                 context.AddSource($"{classInfo.Name}.g", sb.ToString());
             }
